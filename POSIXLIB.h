@@ -360,11 +360,186 @@ __END_DECLS
 
 
 
-
-
-
-
 //end of ctype.h
+
+//start of sys/cdefs.h
+
+#ifndef _CDEFS_H_
+#define _CDEFS_H_
+
+#if defined(__cplusplus)
+#define	__BEGIN_DECLS	extern "C" {
+#define	__END_DECLS	};
+#else
+#define	__BEGIN_DECLS
+#define	__END_DECLS
+#endif
+
+#if defined(__STDC__) || defined(__cplusplus)
+#define	__P(protos)	protos		/* full-blown ANSI C */
+#define	__CONCAT(x,y)	x ## y
+#define	__STRING(x)	#x
+
+#else	/* !(__STDC__ || __cplusplus) */
+#define	__P(protos)	()		/* traditional C preprocessor */
+#define	__CONCAT(x,y)	x/**/y
+#define	__STRING(x)	"x"
+
+#ifdef __GNUC__
+#define	const		__const		/* GCC: ANSI C with -traditional */
+#define	inline		__inline
+#define	signed		__signed
+#define	volatile	__volatile
+
+#else	/* !__GNUC__ */
+#define	const				/* delete ANSI C keywords */
+#define	inline
+#define	signed
+#define	volatile
+
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#define __dead __volatile
+#define __pure __const
+#else
+#define __dead
+#define __pure
+
+
+
+
+
+
+//end of sys/cdefs.h
+//start of sdkddkver.h
+
+#ifndef _SDKDDKVER_H
+#define _SDKDDKVER_H
+#pragma GCC system_header
+
+#define OSVERSION_MASK            0xFFFF0000
+#define SPVERSION_MASK            0x0000FF00
+#define SUBVERSION_MASK           0x000000FF
+
+#define OSVER(ver) ((ver) & OSVERSION_MASK)
+#define SPVER(ver) (((ver) & SPVERSION_MASK) >> 8)
+#define SUBVER(ver) ((ver) & SUBVERSION_MASK)
+#define WINNTVER(ver) ((ver) / 0x00010000)
+
+#define NTDDI_VERSION_FROM_WIN32_WINNT(ver) _NTDDI_VERSION_FROM_WIN32_WINNT(ver)
+#define _NTDDI_VERSION_FROM_WIN32_WINNT(ver) ver##0000
+
+#define _WIN32_WINNT_NT4          0x0400
+#define _WIN32_WINNT_NT4E	  0x0401
+#define _WIN32_WINNT_WIN95	  0x0400
+#define _WIN32_WINNT_WIN98	  0x0410
+#define _WIN32_WINNT_WINME	  0x0490
+#define _WIN32_WINNT_WIN2K        0x0500
+#define _WIN32_WINNT_WINXP        0x0501
+#define _WIN32_WINNT_WS03         0x0502
+#define _WIN32_WINNT_WIN6         0x0600
+#define _WIN32_WINNT_VISTA        0x0600
+#define _WIN32_WINNT_WS08         0x0600
+#define _WIN32_WINNT_LONGORN      0x0600
+#define _WIN32_WINNT_WIN7         0x0601
+
+#define _WIN32_IE_IE50            0x0500
+#define _WIN32_IE_IE501           0x0501
+#define _WIN32_IE_IE55            0x0550
+#define _WIN32_IE_IE60            0x0600
+#define _WIN32_IE_IE60SP1         0x0601
+#define _WIN32_IE_IE60SP2         0x0603
+#define _WIN32_IE_IE70            0x0700
+#define _WIN32_IE_IE80            0x0800
+
+#define __NTDDI_WIN5               0x05000000
+#define __NTDDI_WIN51              0x05010000
+#define __NTDDI_WIN52              0x05020000
+#define __NTDDI_WIN6               0x06000000
+#define __NTDDI_WIN61              0x06010000
+#define __NTDDI_SP0                0x00000000
+#define __NTDDI_SP1                0x00000100
+#define __NTDDI_SP2                0x00000200
+#define __NTDDI_SP3                0x00000300
+#define __NTDDI_SP4                0x00000400
+
+#define NTDDI_WIN2K               __NTDDI_WIN5 + __NTDDI_SP0
+#define NTDDI_WIN2KSP1            __NTDDI_WIN5 + __NTDDI_SP1
+#define NTDDI_WIN2KSP2            __NTDDI_WIN5 + __NTDDI_SP2
+#define NTDDI_WIN2KSP3            __NTDDI_WIN5 + __NTDDI_SP3
+#define NTDDI_WIN2KSP4            __NTDDI_WIN5 + __NTDDI_SP4
+
+#define NTDDI_WINXP               __NTDDI_WIN51 + __NTDDI_SP0
+#define NTDDI_WINXPSP1            __NTDDI_WIN51 + __NTDDI_SP1
+#define NTDDI_WINXPSP2            __NTDDI_WIN51 + __NTDDI_SP2
+#define NTDDI_WINXPSP3            __NTDDI_WIN51 + __NTDDI_SP3
+
+#define NTDDI_WS03                __NTDDI_WIN52 + __NTDDI_SP0
+#define NTDDI_WS03SP1             __NTDDI_WIN52 + __NTDDI_SP1
+#define NTDDI_WS03SP2             __NTDDI_WIN52 + __NTDDI_SP2
+
+#define NTDDI_VISTA               __NTDDI_WIN6 + __NTDDI_SP0
+#define NTDDI_VISTASP1            __NTDDI_WIN6 + __NTDDI_SP1
+#define NTDDI_VISTASP2		  __NTDDI_WIN6 + __NTDDI_SP2
+
+#define NTDDI_LONGHORN            NTDDI_VISTA
+
+#define NTDDI_WIN6                NTDDI_VISTA
+#define NTDDI_WIN6SP1             NTDDI_VISTASP1
+#define NTDDI_WIN6SP2		  NTDDI_VISTASP2
+
+#define NTDDI_WS08                __NTDDI_WIN6 + __NTDDI_SP1
+
+#define NTDDI_WIN7                __NTDDI_WIN61 + __NTDDI_SP0
+
+#ifdef NTDDI_VERSION
+#  ifdef _WIN32_WINNT
+#    if _WIN32_WINNT != OSDIR(NTDDI_VERSION)
+#      error The _WIN32_WINNT value does not match NTDDI_VERSION
+#    endif
+#  else
+#    define _WIN32_WINNT WINNTVER(NTDDI_VERSION)
+#    ifndef WINVER
+#      define WINVER _WIN32_WINNT
+#    endif
+#  endif
+#endif
+
+#ifndef _WIN32_WINNT
+#  ifdef WINVER
+#    define _WIN32_WINNT WINVER
+#  else
+#    ifdef _WARN_DEFAULTS
+#      warning _WIN32_WINNT is defaulting to _WIN32_WINNT_WIN2K
+#    endif
+#    define _WIN32_WINNT _WIN32_WINNT_WIN2K
+#  endif
+#endif
+
+#ifndef WINVER
+#  define WINVER _WIN32_WINNT
+#endif
+
+#ifndef NTDDI_VERSION
+#  ifdef _WARN_DEFAULTS
+#    warning NTDDI_VERSION is defaulting to _WIN32_WINNT version SPK0
+#  endif
+#  define NTDDI_VERSION NTDDI_VERSION_FROM_WIN32_WINNT(_WIN32_WINNT)
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//end of sdkddkver.h
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -566,6 +741,11 @@ box_Const();//example of how to call our function
 #endif
 #endif
 #endif // __dj_include_sys_termios_h_
+#endif
+#endif
+#endif
+#endif
+#endif
 #endif
 #endif
 #endif
